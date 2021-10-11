@@ -1,15 +1,15 @@
 import logo from './logo.svg';
 import './App.css';
 import { useEffect, useState } from 'react';
-
+import Timer from './Timer';
 
 function App() {
   const srcBase = '/images/';
   const fileType = '.jfif' || '.jpg';
   const [cards, setCards] = useState([]);
   const [current, setCurrent] = useState([0, 0]);
-  const [points, setPoints] = useState();
-  const [timer, setTime] = useState();
+  const [points, setPoints] = useState(0);
+
 
   const init = () => {
     setCards(() => {
@@ -21,7 +21,7 @@ function App() {
         res.push({ dId: i, id: i, src: srcBase + i + fileType, view: false });
         res.push({ dId: i, id: 100 + i, src: srcBase + i + fileType, view: false });
       }
-      shuffle(res);
+      // shuffle(res);
       return res;
     });
   }
@@ -30,6 +30,7 @@ function App() {
   }, [])
 
   function reset() {
+    setPoints(0);
     setCurrent([0, 0]);
     init();
   }
@@ -63,15 +64,15 @@ function App() {
 
     if (current[0] && current[1]) {
       if (current[0].dId == current[1].dId && current[0].id !== current[1].id) {
-        
+
         document.getElementById(current[0].id).classList.add('removed')
         document.getElementById(current[1].id).classList.add('removed')
-        
+        setPoints(prev => prev + 1)
         setTimeout(() => {
           setCards(cards.filter(card => card.dId !== current[0].dId))
           setCurrent([0, 0]);
         }, 800)
-         
+
       } else {
         console.log('ятут')
         setTimeout(() => {
@@ -95,7 +96,7 @@ function App() {
     e.preventDefault();
 
     if (current[1]) {
-      return 
+      return
     }
     const target = e.target;
     const id = +target.id;
@@ -108,12 +109,9 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Memory</h1>
-      <button onClick={reset} >reset</button>
-      <div className="result">
-        Найдено пар: {points} <br />
-        Времени прошло: {timer}
-      </div>
+      <h1>Игра "Память"</h1>
+      <Timer reset={reset} points={points} />
+
       <div onClick={hundlerClick} className="game">
         {cards ? cards.map((card, i) => {
           return (
@@ -122,6 +120,9 @@ function App() {
             </div>
           )
         }) : <div className="loading">loading...</div>}
+      </div>
+      <div className="copyright">
+        <a href="https://github.com/igoreshirokov" >Github © Игорь Татарченко</a>
       </div>
     </div>
   );
