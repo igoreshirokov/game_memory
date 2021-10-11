@@ -58,8 +58,6 @@ function App() {
 
   }
   useEffect(() => {
-    console.log("current");
-    console.log(current);
 
     if (current[0] && current[1]) {
       if (current[0].dId == current[1].dId && current[0].id !== current[1].id) {
@@ -73,7 +71,6 @@ function App() {
         }, 800)
 
       } else {
-        console.log('ятут')
         setTimeout(() => {
           hideAll()
           setCurrent([0, 0]);
