@@ -10,15 +10,59 @@ code {
 }
 
 .game {
+    margin: 0 auto;
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     grid-template-rows: repeat(6, 1fr);
     grid-column-gap: 10px;
     grid-row-gap: 10px;
+    max-width: 600px;
+    max-height: 600px;
+}
+
+.card,
+.cards {
+    transition: .3s;
 }
 
 .card {
     position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+@keyframes hello {
+    0% {
+        transform: translateX(calc(100%))
+    }
+
+    100% {
+        transform: translateX(0)
+    }
+}
+
+.card {
+    width: calc((100vw - 70px) / 6);
+    height: calc((100vw - 70px) / 6);
+    max-width: 100px;
+    max-height: 100px;
+    animation: hello .1s;
+    cursor: pointer;
+}
+
+.card img {
+    width: 100%;
+    height: 100%;
+}
+
+@keyframes a {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
 }
 
 .hidden::after {
@@ -26,10 +70,42 @@ code {
     width: 100%;
     height: 100%;
     position: absolute;
-    background-color: blue;
+    background-color: #666;
+    border-radius: 10px;
     left: 0;
     top: 0;
+    box-shadow: 0px 0px 4px 5px inset rgb(0 0 0 / 50%);
+
 }
+
+@keyframes clickcard {
+    0% {
+        transform: translateY(0)
+    }
+
+    100% {
+        transform: translateY(-50%)
+    }
+}
+
+@keyframes removecard {
+    0% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+}
+
+.removed {
+    transform: translateY(-100%);
+    opacity: 0;
+    transition-duration: 1s;
+}
+
 .visible::after {
     content: '';
     width: 100%;
@@ -38,4 +114,9 @@ code {
     background-color: transparent;
     left: 0;
     top: 0;
+}
+
+.visible {
+    animation: clickcard .3s;
+    box-shadow: 0px 0px 3px 1px rgb(0 0 0 / 50%);
 }

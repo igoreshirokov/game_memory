@@ -8,8 +8,10 @@ function App() {
   const fileType = '.jfif' || '.jpg';
   const [cards, setCards] = useState([]);
   const [current, setCurrent] = useState([0, 0]);
+  const [points, setPoints] = useState();
+  const [timer, setTime] = useState();
 
-  useEffect(() => {
+  const init = () => {
     setCards(() => {
       let res = [];
       function shuffle(array) {
@@ -22,58 +24,84 @@ function App() {
       shuffle(res);
       return res;
     });
-
+  }
+  useEffect(() => {
+    init();
   }, [])
 
-  function hiddenAll() {
+  function reset() {
+    setCurrent([0, 0]);
+    init();
+  }
+
+  function setVisible(id) {
     setCards(cards.map(card => {
-      card.view = false;
-      return card;
+      if (card.id == id) {
+        card.view = true
+      }
+      return card
     }))
   }
 
-  function levelUp(array) {
-
-  }
 
   function addNew(id, dId) {
-    console.log(id)
-    console.log(dId)
-    // if (current[0] == dId && current[0] !== id) {
+    setVisible(id)
 
-    //   setCards(cards.filter((card) => card.dId !== dId))
-      
-    //   return [0, 0]
-    // }
-    if (current[0] == 0) {
-      return [dId, 0];
-    } else if (current[0] == dId && current[0] !== id) {
-      setCards(cards.filter((card) => card.dId !== dId))
-      console.log(cards)
-      return [0, 0];
-    } else {
-      return [0, 0];
+    if (!current[0]) {
+      const card = cards.find((card) => card.id == id);
+      setCurrent([card, 0]);
+
+    } else if (!current[1]) {
+      const card = cards.find(card => card.id == id);
+      setCurrent([current[0], card]);
     }
+
   }
   useEffect(() => {
-    console.log(current)
+    console.log("current");
+    console.log(current);
+
+    if (current[0] && current[1]) {
+      if (current[0].dId == current[1].dId && current[0].id !== current[1].id) {
+        
+        document.getElementById(current[0].id).classList.add('removed')
+        document.getElementById(current[1].id).classList.add('removed')
+        
+        setTimeout(() => {
+          setCards(cards.filter(card => card.dId !== current[0].dId))
+          setCurrent([0, 0]);
+        }, 800)
+         
+      } else {
+        console.log('ятут')
+        setTimeout(() => {
+          hideAll()
+          setCurrent([0, 0]);
+        }, 1000)
+      }
+
+    }
+
   }, [current])
 
+  function hideAll() {
+    setCards(cards.map(card => {
+      card.view = false
+      return card
+    }))
+  }
+
   function hundlerClick(e) {
+    e.preventDefault();
+
+    if (current[1]) {
+      return 
+    }
     const target = e.target;
     const id = +target.id;
     const dId = +target.dataset.id;
-    console.log(target)
 
-    if (target.classList.contains('card')) {
-      setCards(cards.map(card => {
-        if (card.id == id) {
-          card.view = true;
-        }
-        return card;
-      }))
-      setCurrent(addNew(id, dId))
-    }
+    addNew(id, dId);
 
   }
 
@@ -81,6 +109,11 @@ function App() {
   return (
     <div className="App">
       <h1>Memory</h1>
+      <button onClick={reset} >reset</button>
+      <div className="result">
+        Найдено пар: {points} <br />
+        Времени прошло: {timer}
+      </div>
       <div onClick={hundlerClick} className="game">
         {cards ? cards.map((card, i) => {
           return (
