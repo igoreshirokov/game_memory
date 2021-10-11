@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import { useEffect, useState } from 'react';
 import Timer from './Timer';
@@ -21,7 +20,7 @@ function App() {
         res.push({ dId: i, id: i, src: srcBase + i + fileType, view: false });
         res.push({ dId: i, id: 100 + i, src: srcBase + i + fileType, view: false });
       }
-      // shuffle(res);
+      shuffle(res);
       return res;
     });
   }
