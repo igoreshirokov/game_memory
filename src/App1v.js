@@ -7,7 +7,7 @@ function App() {
   const srcBase = '/images/';
   const fileType = '.jfif' || '.jpg';
   const [cards, setCards] = useState([]);
-  const [current, setCurrent] = useState([0, 0]);
+  const [current, setCurrent] = useState([0,0]);
 
   useEffect(() => {
     setCards(() => {
@@ -16,66 +16,60 @@ function App() {
         array.sort(() => Math.random() - 0.5);
       }
       for (let i = 1; i <= 18; i++) {
-        res.push({ dId: i, id: i, src: srcBase + i + fileType, view: false });
-        res.push({ dId: i, id: 100 + i, src: srcBase + i + fileType, view: false });
+        res.push({dId: i, id: i, src: srcBase + i + fileType, view: false });
+        res.push({dId: i, id: 100+i, src: srcBase + i + fileType, view: false });
       }
       shuffle(res);
       return res;
     });
-
+    
   }, [])
 
   function hiddenAll() {
-    setCards(cards.map(card => {
+    setCards(cards.map( card => {
       card.view = false;
       return card;
-    }))
+    } ))
   }
 
-  function levelUp(array) {
-
-  }
-
-  function addNew(id, dId) {
-    console.log(id)
-    console.log(dId)
-    // if (current[0] == dId && current[0] !== id) {
-
-    //   setCards(cards.filter((card) => card.dId !== dId))
-      
-    //   return [0, 0]
-    // }
-    if (current[0] == 0) {
-      return [dId, 0];
-    } else if (current[0] == dId && current[0] !== id) {
-      setCards(cards.filter((card) => card.dId !== dId))
-      console.log(cards)
-      return [0, 0];
-    } else {
-      return [0, 0];
-    }
-  }
   useEffect(() => {
+    if (current[0] !== 0) {
+      if (current[1] !== 0) {
+        if (current[0] == current[1]) {
+          console.log('opss')
+        } else {
+          setCurrent([0,0])
+          setTimeout(() => hiddenAll(), 3000)
+        }
+      }
+    }
     console.log(current)
+    
   }, [current])
 
   function hundlerClick(e) {
-    const target = e.target;
-    const id = +target.id;
-    const dId = +target.dataset.id;
-    console.log(target)
-
-    if (target.classList.contains('card')) {
+    const target = e.target.classList.contains('card') && e.target;
+    if (target) {
+      const id = target.dataset.id
+     
+      setCurrent(() => {
+        if ( current[0] == 0) {
+          return [id,0];
+        }
+        else if (current[1] !== [0]) {
+          return [current[0], id]
+        } else {
+          console.log('Ой!')
+        }
+      });
       setCards(cards.map(card => {
         if (card.id == id) {
-          card.view = true;
+          card.view = true
         }
         return card;
-      }))
-      setCurrent(addNew(id, dId))
+      }));
     }
-
-  }
+  } 
 
 
   return (
